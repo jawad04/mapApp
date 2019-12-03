@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { Map, TileLayer, Marker, Popup } from "react-leaflet";
+import { Card, Button, CardTitle, CardText, Row, Col } from "reactstrap";
+
 import L from "leaflet";
 
 import "./App.css";
@@ -18,34 +20,64 @@ class App extends Component {
       lat: 51.505,
       lng: -0.09
     },
-    zoom: 13
+    haveUsersLocation: false,
+    zoom: 2
   };
 
   componentDidMount() {
-    navigator.geolocation.getCurrentPosition(position => {
-      this.setState({
-        location: {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        }
-      });
-    });
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        this.setState({
+          location: {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          },
+          haveUsersLocation: true,
+          zoom: 13
+        });
+      },
+      () => {
+        fetch("https://ipapi.co/json")
+          .then(res => res.json())
+          .then(location => {
+            this.setState({
+              location: {
+                lat: location.latitude,
+                lng: location.longitude
+              },
+              haveUsersLocation: true,
+              zoom: 13
+            });
+          });
+      }
+    );
   }
   render() {
     const position = [this.state.location.lat, this.state.location.lng];
 
     return (
-      <Map className="map" center={position} zoom={this.state.zoom}>
-        <TileLayer
-          attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        <Marker position={position} icon={myIcon}>
-          <Popup>
-            A pretty CSS3 popup. <br /> Easily customizable.
-          </Popup>
-        </Marker>
-      </Map>
+      <div className="map">
+        <Map className="map" center={position} zoom={this.state.zoom}>
+          <TileLayer
+            attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+          {this.state.haveUsersLocation && (
+            <Marker position={position} icon={myIcon}>
+              <Popup>
+                A pretty CSS3 popup. <br /> Easily customizable.
+              </Popup>
+            </Marker>
+          )}
+        </Map>
+        <Card body className="message-form">
+          <CardTitle>Welcome to MapApp!</CardTitle>
+          <CardText>Leave a message with your location!</CardText>
+          <CardText>Thanks for stopping by!</CardText>
+
+          <Button>Go somewhere</Button>
+        </Card>
+      </div>
     );
   }
 }

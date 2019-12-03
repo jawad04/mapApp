@@ -16,5 +16,9 @@
   "bugs": {
     "url": "https://github.com/jawad04/mapApp/issues"
   },
-  "homepage": "https://github.com/jawad04/mapApp#readme"
+  "homepage": "https://github.com/jawad04/mapApp#readme",
+  "dependencies": {
+    "bootstrap": "^4.4.1",
+    "reactstrap": "^8.1.1"
+  }
 }
