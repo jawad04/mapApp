@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/jawad04/mapApp#readme",
   "dependencies": {
+    "@hapi/joi": "^16.1.8",
     "bootstrap": "^4.4.1",
     "reactstrap": "^8.1.1"
   }
