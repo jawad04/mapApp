@@ -5,7 +5,7 @@ const messages = db.get("messages");
 
 const schema = Joi.object({
   name: Joi.string()
-    .pattern(/^[A-Za-zÀ-ÿ ]{1,100}$/)
+    .pattern(/^[A-Za-zÀ-ÿ -_]{1,100}$/)
     .required(),
   message: Joi.string()
     .min(1)
@@ -28,7 +28,9 @@ const schema = Joi.object({
 const router = express.Router();
 
 router.get("/", (req, res) => {
-  res.json([]);
+  messages.find().then(allMessages => {
+    res.json(allMessages);
+  });
 });
 
 router.post("/", (req, res, next) => {
