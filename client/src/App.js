@@ -1,6 +1,17 @@
 import React, { Component } from "react";
 import { Map, TileLayer, Marker, Popup } from "react-leaflet";
-import { Card, Button, CardTitle, CardText, Row, Col } from "reactstrap";
+import {
+  Card,
+  Button,
+  CardTitle,
+  CardText,
+  Row,
+  Col,
+  Form,
+  FormGroup,
+  Label,
+  Input
+} from "reactstrap";
 
 import L from "leaflet";
 
@@ -21,7 +32,11 @@ class App extends Component {
       lng: -0.09
     },
     haveUsersLocation: false,
-    zoom: 2
+    zoom: 2,
+    userMessage: {
+      name: "",
+      message: ""
+    }
   };
 
   componentDidMount() {
@@ -52,6 +67,19 @@ class App extends Component {
       }
     );
   }
+  formSubmited = event => {
+    event.preventDefault();
+    console.log(this.state.userMessage);
+  };
+  valueChanged = event => {
+    const { name, value } = event.target;
+    this.setState(prevState => ({
+      userMessage: {
+        ...prevState.userMessage,
+        [name]: value
+      }
+    }));
+  };
   render() {
     const position = [this.state.location.lat, this.state.location.lng];
 
@@ -74,8 +102,35 @@ class App extends Component {
           <CardTitle>Welcome to MapApp!</CardTitle>
           <CardText>Leave a message with your location!</CardText>
           <CardText>Thanks for stopping by!</CardText>
-
-          <Button>Go somewhere</Button>
+          <Form onSubmit={this.formSubmited}>
+            <FormGroup row>
+              <Label for="name">Name</Label>{" "}
+              <Input
+                type="name"
+                name="name"
+                id="name"
+                placeholder="Enter your name"
+                onChange={this.valueChanged}
+              />{" "}
+            </FormGroup>
+            <FormGroup row>
+              <Label for="message">Message</Label>
+              <Input
+                type="textarea"
+                name="message"
+                id="message"
+                placeholder="Enter a message"
+                onChange={this.valueChanged}
+              />
+            </FormGroup>
+            <Button
+              type="submit"
+              color="info"
+              disabled={!this.state.haveUsersLocation}
+            >
+              Send
+            </Button>
+          </Form>
         </Card>
       </div>
     );
