@@ -20,9 +20,11 @@
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^6.2.0",
+    "eslint-utils": "^1.4.3",
     "express": "^4.16.4",
-    "helmet": "^3.15.0",
+    "helmet": "^3.21.2",
     "joi": "^14.3.1",
+    "lodash": "^4.17.15",
     "monk": "^7.1.1",
     "morgan": "^1.9.1"
   },
@@ -32,7 +34,7 @@
     "eslint-plugin-import": "^2.14.0",
     "mocha": "^5.2.0",
     "nodemon": "^1.18.9",
-    "snyk": "^1.185.5",
+    "snyk": "^1.256.0",
     "supertest": "^3.3.0"
   }
 }
