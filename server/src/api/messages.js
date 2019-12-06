@@ -4,9 +4,7 @@ const db = require("../db");
 const messages = db.get("messages");
 
 const schema = Joi.object({
-  name: Joi.string()
-    .pattern(/^[A-Za-zÀ-ÿ -_]{1,100}$/)
-    .required(),
+  name: Joi.string().required(),
   message: Joi.string()
     .min(1)
     .max(500)
