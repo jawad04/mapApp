@@ -1,12 +1,11 @@
 import React, { Component } from "react";
+import * as Joi from "@hapi/joi";
 import { Map, TileLayer, Marker, Popup } from "react-leaflet";
 import {
   Card,
   Button,
   CardTitle,
   CardText,
-  Row,
-  Col,
   Form,
   FormGroup,
   Label,
@@ -24,6 +23,19 @@ var myIcon = L.icon({
   iconAnchor: [12.4, 41],
   popupAnchor: [0, -41]
 });
+
+const schema = Joi.object({
+  name: Joi.string().required(),
+  message: Joi.string()
+    .min(1)
+    .max(500)
+    .required()
+});
+
+const API_URL =
+  window.location.hostname === "localhost"
+    ? "http://localhost:5000/api/v1/messages"
+    : "production-url-here";
 
 class App extends Component {
   state = {
@@ -67,9 +79,34 @@ class App extends Component {
       }
     );
   }
+
+  formIsValid = () => {
+    const userMessage = {
+      name: this.state.userMessage.name,
+      message: this.state.userMessage.message
+    };
+    const { error } = schema.validate(userMessage);
+    return !error && this.state.haveUsersLocation ? true : false;
+  };
   formSubmited = event => {
     event.preventDefault();
-    console.log(this.state.userMessage);
+
+    if (this.formIsValid()) {
+      fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          name: this.state.userMessage.name,
+          message: this.state.userMessage.message,
+          latitude: this.state.location.lat,
+          longitude: this.state.location.lng
+        })
+      })
+        .then(res => res.json())
+        .then(message => console.log(message));
+    }
   };
   valueChanged = event => {
     const { name, value } = event.target;
@@ -123,11 +160,7 @@ class App extends Component {
                 onChange={this.valueChanged}
               />
             </FormGroup>
-            <Button
-              type="submit"
-              color="info"
-              disabled={!this.state.haveUsersLocation}
-            >
+            <Button type="submit" color="info" disabled={!this.formIsValid()}>
               Send
             </Button>
           </Form>
