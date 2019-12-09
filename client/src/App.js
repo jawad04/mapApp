@@ -9,7 +9,8 @@ import {
   Form,
   FormGroup,
   Label,
-  Input
+  Input,
+  Collapse
 } from "reactstrap";
 
 import L from "leaflet";
@@ -46,21 +47,26 @@ const API_URL =
     : "https://whispering-stream-70752.herokuapp.com/api/v1/messages";
 
 class App extends Component {
-  state = {
-    location: {
-      lat: 51.505,
-      lng: -0.09
-    },
-    haveUsersLocation: false,
-    zoom: 2,
-    userMessage: {
-      name: "",
-      message: ""
-    },
-    sendingMessage: false,
-    sentMessage: false,
-    messages: []
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      location: {
+        lat: 51.505,
+        lng: -0.09
+      },
+      haveUsersLocation: false,
+      zoom: 2,
+      userMessage: {
+        name: "",
+        message: ""
+      },
+      sendingMessage: false,
+      sentMessage: false,
+      messages: [],
+      isOpen: false
+    };
+    this.toglle = this.toglle.bind(this);
+  }
 
   componentDidMount() {
     fetch(API_URL)
@@ -144,7 +150,10 @@ class App extends Component {
         .then(message => {
           console.log(message);
           setTimeout(() => {
-            this.setState({ sendingMessage: false, sentMessage: true });
+            this.setState({
+              sendingMessage: false,
+              sentMessage: true
+            });
           }, 1000);
         });
     }
@@ -157,6 +166,9 @@ class App extends Component {
         [name]: value
       }
     }));
+  };
+  toglle = () => {
+    this.setState({ isOpen: !this.state.isOpen });
   };
   render() {
     const position = [this.state.location.lat, this.state.location.lng];
@@ -196,46 +208,52 @@ class App extends Component {
           ))}
         </Map>
         <Card body className="message-form">
-          <CardTitle>Welcome to MapApp!</CardTitle>
-          <CardText>Leave a message with your location!</CardText>
-          <CardText>Thanks for stopping by!</CardText>
-          {!this.state.sendingMessage &&
-          !this.state.sentMessage &&
-          this.state.haveUsersLocation ? (
-            <Form onSubmit={this.formSubmited}>
-              <FormGroup row>
-                <Label for="name">Name</Label>{" "}
-                <Input
-                  type="name"
-                  name="name"
-                  id="name"
-                  placeholder="Enter your name"
-                  onChange={this.valueChanged}
-                />{" "}
-              </FormGroup>
-              <FormGroup row>
-                <Label for="message">Message</Label>
-                <Input
-                  type="textarea"
-                  name="message"
-                  id="message"
-                  placeholder="Enter a message"
-                  onChange={this.valueChanged}
-                />
-              </FormGroup>
-              <Button type="submit" color="info" disabled={!this.formIsValid()}>
-                Send
-              </Button>
-            </Form>
-          ) : this.state.sendingMessage || !this.state.haveUsersLocation ? (
-            <video
-              autoPlay
-              loop
-              src="https://i.giphy.com/media/BCIRKxED2Y2JO/giphy.mp4"
-            ></video>
-          ) : (
-            <CardText>Thanks for submitting a message!</CardText>
-          )}
+          <Button className="show-btn" onClick={this.toglle}>
+            {this.state.isOpen ? <span>Hide</span> : <span>Show</span>}
+          </Button>
+          <Collapse isOpen={this.state.isOpen}>
+            {!this.state.sendingMessage &&
+            !this.state.sentMessage &&
+            this.state.haveUsersLocation ? (
+              <Form onSubmit={this.formSubmited}>
+                <FormGroup row>
+                  <Label for="name">Name</Label>{" "}
+                  <Input
+                    type="name"
+                    name="name"
+                    id="name"
+                    placeholder="Enter your name"
+                    onChange={this.valueChanged}
+                  />{" "}
+                </FormGroup>
+                <FormGroup row>
+                  <Label for="message">Message</Label>
+                  <Input
+                    type="textarea"
+                    name="message"
+                    id="message"
+                    placeholder="Enter a message"
+                    onChange={this.valueChanged}
+                  />
+                </FormGroup>
+                <Button
+                  type="submit"
+                  color="info"
+                  disabled={!this.formIsValid()}
+                >
+                  Send
+                </Button>
+              </Form>
+            ) : this.state.sendingMessage || !this.state.haveUsersLocation ? (
+              <video
+                autoPlay
+                loop
+                src="https://i.giphy.com/media/BCIRKxED2Y2JO/giphy.mp4"
+              ></video>
+            ) : (
+              <CardText>Thanks for submitting a message!</CardText>
+            )}
+          </Collapse>
         </Card>
       </div>
     );
