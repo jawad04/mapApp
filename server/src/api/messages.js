@@ -1,6 +1,6 @@
 const express = require("express");
 const Joi = require("@hapi/joi");
-const db = require("../db");
+const db = require("../../config/db");
 const messages = db.get("messages");
 
 const schema = Joi.object({
