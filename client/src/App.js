@@ -43,7 +43,7 @@ const schema = Joi.object({
 const API_URL =
   window.location.hostname === "localhost"
     ? "http://localhost:5000/api/v1/messages"
-    : "https://whispering-stream-70752.herokuapp.com";
+    : "https://whispering-stream-70752.herokuapp.com/api/v1/messages";
 
 class App extends Component {
   state = {
