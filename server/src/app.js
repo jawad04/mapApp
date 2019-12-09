@@ -2,7 +2,6 @@ const express = require("express");
 const morgan = require("morgan");
 const helmet = require("helmet");
 const cors = require("cors");
-const path = require("path");
 
 require("dotenv").config();
 
@@ -17,16 +16,5 @@ app.use(express.json());
 app.use(cors());
 
 app.use("/api/v1", api);
-
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(__dirname + "client/build"));
-  app.get("*", (req, res) => {
-    res.sendFile("index.html", {
-      root: path.join(__dirname, "/../../client/build")
-    });
-  });
-}
-app.use(middlewares.notFound);
-app.use(middlewares.errorHandler);
 
 module.exports = app;
