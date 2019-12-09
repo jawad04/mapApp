@@ -15,3 +15,7 @@ body {
   top: 10px;
   right: 10px;
 }
+
+video {
+  width: 100%;
+}
