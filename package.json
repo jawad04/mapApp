@@ -4,7 +4,8 @@
   "description": "A map application to find and text friends across the globe",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
   },
   "repository": {
     "type": "git",
@@ -20,6 +21,7 @@
   "dependencies": {
     "@hapi/joi": "^16.1.8",
     "bootstrap": "^4.4.1",
+    "path": "^0.12.7",
     "reactstrap": "^8.1.1"
   }
 }

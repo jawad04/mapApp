@@ -21,14 +21,14 @@ import messageLocationUrl from "./message_location.svg";
 var myIcon = L.icon({
   iconUrl: userLocationUrl,
   iconSize: [50, 82],
-  iconAnchor: [25, 82],
+  iconAnchor: [0, 82],
   popupAnchor: [0, -82]
 });
 
 var messageIcon = L.icon({
-  iconUrl: userLocationUrl,
+  iconUrl: messageLocationUrl,
   iconSize: [50, 82],
-  iconAnchor: [25, 82],
+  iconAnchor: [0, 82],
   popupAnchor: [0, -82]
 });
 
@@ -43,7 +43,7 @@ const schema = Joi.object({
 const API_URL =
   window.location.hostname === "localhost"
     ? "http://localhost:5000/api/v1/messages"
-    : "production-url-here";
+    : "https://whispering-stream-70752.herokuapp.com";
 
 class App extends Component {
   state = {
@@ -66,6 +66,21 @@ class App extends Component {
     fetch(API_URL)
       .then(res => res.json())
       .then(messages => {
+        const haveSeenLocation = {};
+        messages = messages.reduce((all, message) => {
+          const key = `${message.latitude.toFixed(
+            3
+          )}${message.longitude.toFixed(3)}`;
+          if (haveSeenLocation[key]) {
+            haveSeenLocation[key].otherMessages =
+              haveSeenLocation[key].otherMessages || [];
+            haveSeenLocation[key].otherMessages.push(message);
+          } else {
+            haveSeenLocation[key] = message;
+            all.push(message);
+          }
+          return all;
+        }, []);
         this.setState({
           messages
         });
@@ -158,13 +173,24 @@ class App extends Component {
           )}
           {this.state.messages.map(message => (
             <Marker
+              key={message._id}
               position={[message.latitude, message.longitude]}
-              icon={myIcon}
+              icon={messageIcon}
             >
               <Popup>
-                <em>
-                  {message.name}: {message.message}
-                </em>{" "}
+                <p>
+                  <em>
+                    {message.name}: {message.message}
+                  </em>
+                </p>
+                {message.otherMessages &&
+                  message.otherMessages.map(message => (
+                    <p key={message._id}>
+                      <em>
+                        {message.name}: {message.message}
+                      </em>
+                    </p>
+                  ))}
               </Popup>
             </Marker>
           ))}
