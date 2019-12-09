@@ -1,6 +1,7 @@
 const app = require("./server/src/app");
 const path = require("path");
 const middlewares = require("./server/src/middlewares");
+const express = require("express");
 
 const port = process.env.PORT || 5000;
 
